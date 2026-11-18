@@ -227,7 +227,8 @@ def adapt_engine_generate_request(
         raise ValueError(
             "sampling_params.routed_experts_prompt_start must be a non-negative integer"
         )
-    if raw_prompt_start >= len(token_ids):
+    # Image tokens are not expanded yet, so vLLM checks the offset once they are.
+    if not envelope.get("content_parts") and raw_prompt_start >= len(token_ids):
         raise ValueError(
             "sampling_params.routed_experts_prompt_start must be smaller than "
             "the prompt token count"
